@@ -5,6 +5,9 @@ let
         slang-lsp-tools = final: _: final.callPackage ./pkgs/programs/slang-lsp-tools.nix { };
         ttf2psf = final: _: final.callPackage ./pkgs/programs/ttf2psf.nix { };
         veadotube = final: _: final.callPackage ./pkgs/programs/veadotube.nix { };
+        quartus-prime-pro = final: _: final.callPackage ./pkgs/programs/quartus/quartus-prime-pro.nix { };
+        quartus-prime-standard =
+            final: _: final.callPackage ./pkgs/programs/quartus/quartus-prime-standard.nix { };
     };
 
     composeExtensions =
