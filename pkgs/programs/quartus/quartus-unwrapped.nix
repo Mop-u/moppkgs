@@ -3,6 +3,7 @@
     lib,
     fetchurl,
     unstick,
+    unzip,
     quartusSource,
     quartusOptions,
 }:
@@ -80,7 +81,10 @@ mkDerivation {
     inherit version;
     pname = "quartus-prime-${quartusSource.variant}-unwrapped";
 
-    nativeBuildInputs = [ unstick ];
+    nativeBuildInputs = [
+        unstick
+        unzip
+    ];
 
     buildCommand =
         let
