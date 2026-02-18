@@ -84,12 +84,21 @@ mkDerivation {
 
     buildCommand =
         let
-            copyInstaller = installer: ''
-                # `$(cat $NIX_CC/nix-support/dynamic-linker) $src[0]` often segfaults, so cp + patchelf
-                cp ${installer} $TEMP/${installer.name}
-                chmod u+w,+x $TEMP/${installer.name}
-                patchelf --interpreter $(cat $NIX_CC/nix-support/dynamic-linker) $TEMP/${installer.name}
-            '';
+
+            copyExecutable =
+                { path, name }:
+                ''
+                    # `$(cat $NIX_CC/nix-support/dynamic-linker) $src[0]` often segfaults, so cp + patchelf
+                    cp ${path} $TEMP/${name}
+                    chmod u+w,+x $TEMP/${name}
+                    patchelf --interpreter $(cat $NIX_CC/nix-support/dynamic-linker) $TEMP/${name}
+                '';
+            copyInstaller =
+                installer:
+                copyExecutable {
+                    path = installer;
+                    inherit (installer) name;
+                };
             copyComponent = component: "cp ${component} $TEMP/${component.name}";
             # leaves enabled: quartus, devinfo
             disabledComponents = [
@@ -115,6 +124,24 @@ mkDerivation {
               --disable-components ${lib.concatStringsSep "," disabledComponents} \
               --mode unattended --installdir $out --accept_eula 1
 
+            ${lib.optionalString (builtins.hasAttr "patcher" quartusSource) (
+                let
+                    patcherName = builtins.baseNameOf quartusSource.patcher;
+                in
+                ''
+                    # https://community.altera.com/kb/knowledge-base/why-do-i-unexpectedly-observe-intermittent-ddm-errors/349714
+                    echo "setting up patcher..."
+                    ${copyExecutable {
+                        path = quartusSource.patcher;
+                        name = patcherName;
+                    }}
+
+                    echo "executing patcher..."
+                    unstick $TEMP/${patcherName} \
+                      --mode unattended --installdir $out --accept_eula 1 --patch_to quartus
+                ''
+            )}
+
             echo "cleaning up..."
             rm -r $out/uninstall $out/logs
 
@@ -131,9 +158,5 @@ mkDerivation {
         sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
         license = lib.licenses.unfree;
         platforms = [ "x86_64-linux" ];
-        maintainers = with lib.maintainers; [
-            bjornfor
-            kwohlfahrt
-        ];
     };
 }
