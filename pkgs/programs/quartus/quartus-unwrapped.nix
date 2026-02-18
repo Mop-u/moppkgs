@@ -124,6 +124,9 @@ mkDerivation {
               --disable-components ${lib.concatStringsSep "," disabledComponents} \
               --mode unattended --installdir $out --accept_eula 1
 
+            # cat all the logs so we can see them in nix log
+            cat $out/logs/*
+
             ${lib.optionalString (builtins.hasAttr "patcher" quartusSource) (
                 let
                     patcherName = builtins.baseNameOf quartusSource.patcher;
