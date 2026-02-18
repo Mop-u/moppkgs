@@ -2,42 +2,50 @@ final: prev: {
     quartus-prime-pro = final.callPackage ../quartus.nix {
         quartusSource = {
             variant = "pro";
-            version = "25.1.0.129";
-            baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/25.1/129/ib_installers";
+            version = "25.3.0.109";
+            baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/25.3/109/ib_installers";
             quartusInstaller = "QuartusProSetup";
             defaultInstalls = [ ];
             defaultDevices = [ "cyclone10gx" ]; # The only device family that doesn't need a paid license
             installers = {
-                QuartusProSetup = "sha256-XXyzRpOyAAi444VcvMlz+tOFo84xN4D/PMBnZtEocII=";
-                QuestaSetup = "sha256-jMsVHOjm/3gDaYeODVmxHw4Mvzd0vZIs9aXVyufgbq8=";
+                QuartusProSetup = "sha256-Cz1O9AkEgkMdnDhy5G+MO04phTmSquGmbg/F/qGMaOg=";
+                QuestaSetup = "sha256-WCbN0l73nlH7CjzjQ2+B0q9KUJKcaiYYxhxQgjMLyeg=";
             };
 
             installerParts.QuartusProSetup = {
-                QuartusProSetup-part2 = "sha256-lAqZNFoqTUVkL+XeDVxWfWlJU2pL5NtsMPyI6rmZpUo=";
+                QuartusProSetup-part2 = "sha256-QqG/bieWb40bbb3bluAiGXZsVa7T/3ZYVjJRZCLS9LU=";
             };
 
             devices =
                 let
-                    agilex_common = "sha256-Z9zDhZBoy5whLcCTPasu4HYQt0cZ+m5eI+RjrUhGZsw=";
+                    agilex_common = "sha256-n/Z3Vmbj+JltvhyzPiHFgGVfO/TaA6pHt8Z2yQu5opQ=";
                 in
                 {
                     agilex3 = {
                         inherit agilex_common;
-                        agilex3 = "sha256-h7C5JOFW6z3c9LVZAdw+wRmN8cWd1KGWPE2qtTQuoqk=";
+                        agilex3 = "sha256-Kj/2kiz/Ha29zS4H6rqI9AtFUE9R4wdXGwekNf9obTg=";
                     };
                     agilex5 = {
                         inherit agilex_common;
-                        agilex5 = "sha256-EkTuoTIXGOkrQStp+6uxay+M8uctENe8BDD0/FGgkdc=";
+                        agilex5 = "sha256-ioYbtTV1DpW4jUwLpD3o294W3GXWJvVuunqa6nLr9dI=";
                     };
                     agilex7 = {
                         inherit agilex_common;
-                        agilex7 = "sha256-8wCmguM4BI4X7956e3NXx6a6H1c7P1q3RsJ+gkxGC+E=";
+                        agilex7 = "sha256-rtuENW1Tg61SwRujmCZVvPbHNIfYaKc/wxqkS3aB2gU=";
                     };
-                    arria10 = "sha256-eNGvikhd9WmesyGBpUMYoJ19iMLs+AGkg0LuK5JJJJA=";
-                    cyclone10gx = "sha256-uJBFevtpaC8INeewPUyNh7Y9SJJyhHWZaV5Svuz9sUM=";
-                    easicn5x = "sha256-96nn7qD0xGZlcxcCeP4uVCRcM7itqwbG+wL2ZioMu68=";
-                    stratix10 = "sha256-IBX7ceTc6/oHcT/RFRVvBlvZEMB3nBt4X33rA+wKn/Q=";
+                    arria10 = "sha256-HewRnGsV5LW2hsigZCqd3V5qN8Swl0mP5EptVOfcGU4=";
+                    cyclone10gx = "sha256-+iG9x7e/Q8ViV7ljpjQOYMETAExKn8586vXchDandgU=";
+                    stratix10 = "sha256-+CaEa1L8xviW405hbOgb6vOAHYAtVPFqXQZJQcLnP1Q=";
                 };
+
+            patcher = "${
+                final.fetchzip {
+                    stripRoot = false;
+                    url = "https://community.altera.com/t5/s/jgyke29768/attachments/jgyke29768/knowledge-base/10423.10/2/quartus-25.3-0.27.zip";
+                    hash = "sha256-sydAtG+NLAQaTWR9pTitui74I7MjFKr5JQgbHrn0oVk=";
+                }
+            }/quartus-25.3-0.27-linux.run";
+
         };
     };
 }
