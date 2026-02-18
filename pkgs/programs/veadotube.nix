@@ -98,6 +98,7 @@ stdenv.mkDerivation (finalAttrs: rec {
         description = "A collection of tools for virtual puppetry made by olmewe and BELLA!.";
         homepage = "https://veado.tube";
         mainProgram = "veadotube";
+        sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
         license = [
             {
                 # restrictions on corporations apply for both use and redistribution
@@ -109,5 +110,6 @@ stdenv.mkDerivation (finalAttrs: rec {
                 deprecated = false;
             }
         ];
+        platforms = [ "x86_64-linux" ];
     };
 })
