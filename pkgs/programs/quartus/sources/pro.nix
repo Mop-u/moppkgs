@@ -31,7 +31,7 @@ in
             fetchzip {
                 stripRoot = false;
                 url = "https://community.altera.com/t5/s/jgyke29768/attachments/jgyke29768/knowledge-base/10423.10/6/quartus-23.4-0.70.zip";
-                hash = "";
+                hash = "sha256-8BrqEybFRppiwNf/8zyQJ8y3Cmv8pjT+9/CA9YjzyeI=";
             }
         }/quartus-23.4-0.70-linux.run";
     };
@@ -75,7 +75,7 @@ in
             fetchzip {
                 stripRoot = false;
                 url = "https://community.altera.com/t5/s/jgyke29768/attachments/jgyke29768/knowledge-base/10423.10/7/quartus-24.3-0.35.zip";
-                hash = "";
+                hash = "sha256-pgZ/njSpqMyG64lVQ0KDPyUzceWjgVMqwXrnMbzoQX8=";
             }
         }/quartus-24.3-0.35-linux.run";
     };
@@ -123,7 +123,7 @@ in
             fetchzip {
                 stripRoot = false;
                 url = "https://community.altera.com/t5/s/jgyke29768/attachments/jgyke29768/knowledge-base/10423.10/9/quartus-25.1-0.36.zip";
-                hash = "";
+                hash = "sha256-Hj+y6GPb/hbQsT7fwTz13ZhGdOtFSLB6Y4sMV04wQug=";
             }
         }/quartus-25.1-0.36-linux.run";
     };
