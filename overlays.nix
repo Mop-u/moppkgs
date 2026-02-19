@@ -8,8 +8,7 @@ let
             veadotube = final: _: final.callPackage ./pkgs/programs/veadotube.nix { };
         })
         // {
-            quartus-prime-pro = import ./pkgs/programs/quartus/overlays/pro.nix;
-            quartus-prime-standard = import ./pkgs/programs/quartus/overlays/standard.nix;
+            quartus = import ./pkgs/programs/quartus/overlay.nix;
         };
 
     composeExtensions =
