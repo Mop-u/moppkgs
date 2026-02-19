@@ -5,11 +5,14 @@ final: prev: rec {
         standard = final.callPackage ./sources/standard.nix { };
     };
 
-    quartus-prime-pro = final.callPackage ./quartus.nix {
+    mkQuartus = final.callPackage ./quartus.nix;
+
+    quartus-prime-pro = mkQuartus {
         quartusSource = quartusSources.pro."25.3.0.109";
     };
 
-    quartus-prime-standard = final.callPackage ./quartus.nix {
+    quartus-prime-standard = mkQuartus {
         quartusSource = quartusSources.standard."23.1std.1.993";
     };
+
 }
