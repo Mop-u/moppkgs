@@ -76,6 +76,8 @@ let
         ) selectedDevices)
     );
 
+    patches = quartusSource.patches or [ ];
+
 in
 mkDerivation {
     inherit version;
@@ -114,6 +116,19 @@ mkDerivation {
                 if hasModelSim then ([ "modelsim_ae" ] ++ (lib.optional (!withModelSim) "modelsim_ase")) else [ ]
             )
             ++ unselectedDevices;
+
+            # https://community.altera.com/kb/knowledge-base/why-do-i-unexpectedly-observe-intermittent-ddm-errors/349714
+            applyPatch = patcher: ''
+                echo "setting up patcher..."
+                ${copyExecutable {
+                    path = patcher;
+                    name = builtins.baseNameOf patcher;
+                }}
+
+                echo "executing patcher..."
+                unstick $TEMP/${builtins.baseNameOf patcher} \
+                  --mode unattended --installdir $out --accept_eula 1 --patch_to quartus
+            '';
         in
         ''
             echo "setting up installer..."
@@ -128,26 +143,10 @@ mkDerivation {
               --disable-components ${lib.concatStringsSep "," disabledComponents} \
               --mode unattended --installdir $out --accept_eula 1
 
+            ${lib.concatMapStringsSep "\n" applyPatch patches}
+
             # cat all the logs so we can see them in nix log
             cat $out/logs/*
-
-            ${lib.optionalString (builtins.hasAttr "patcher" quartusSource) (
-                let
-                    patcherName = builtins.baseNameOf quartusSource.patcher;
-                in
-                ''
-                    # https://community.altera.com/kb/knowledge-base/why-do-i-unexpectedly-observe-intermittent-ddm-errors/349714
-                    echo "setting up patcher..."
-                    ${copyExecutable {
-                        path = quartusSource.patcher;
-                        name = patcherName;
-                    }}
-
-                    echo "executing patcher..."
-                    unstick $TEMP/${patcherName} \
-                      --mode unattended --installdir $out --accept_eula 1 --patch_to quartus
-                ''
-            )}
 
             echo "cleaning up..."
             rm -r $out/uninstall $out/logs

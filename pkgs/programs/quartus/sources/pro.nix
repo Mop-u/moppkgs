@@ -27,13 +27,15 @@ in
             easicn5x = "sha256-sEpGbtuEBA/qv8ZOg3XqxfXzfsfMXByWqsDGIJyz0OU=";
             stratix10 = "sha256-oMYV2h/wDeoPEtd0mcw+Rsu2FNXYud1v0IepvJDifYA=";
         };
-        patcher = "${
-            fetchzip {
-                stripRoot = false;
-                url = "https://community.altera.com/t5/s/jgyke29768/attachments/jgyke29768/knowledge-base/10423.10/6/quartus-23.4-0.70.zip";
-                hash = "sha256-8BrqEybFRppiwNf/8zyQJ8y3Cmv8pjT+9/CA9YjzyeI=";
-            }
-        }/quartus-23.4-0.70-linux.run";
+        patches = [
+            "${
+                fetchzip {
+                    stripRoot = false;
+                    url = "https://community.altera.com/t5/s/jgyke29768/attachments/jgyke29768/knowledge-base/10423.10/6/quartus-23.4-0.70.zip";
+                    hash = "sha256-8BrqEybFRppiwNf/8zyQJ8y3Cmv8pjT+9/CA9YjzyeI=";
+                }
+            }/quartus-23.4-0.70-linux.run"
+        ];
     };
     "24.3.0.212" = {
         inherit variant;
@@ -71,13 +73,15 @@ in
                 easicn5x = "sha256-oX3Tak9dYmb6bbTHQ1scjYREYNquiusHH0MWTAUUUWQ=";
                 stratix10 = "sha256-7NuM6cWBKz6G0Tar5ixDwyAHZ7zanIlJCr0L4S14Wug=";
             };
-        patcher = "${
-            fetchzip {
-                stripRoot = false;
-                url = "https://community.altera.com/t5/s/jgyke29768/attachments/jgyke29768/knowledge-base/10423.10/7/quartus-24.3-0.35.zip";
-                hash = "sha256-pgZ/njSpqMyG64lVQ0KDPyUzceWjgVMqwXrnMbzoQX8=";
-            }
-        }/quartus-24.3-0.35-linux.run";
+        patches = [
+            "${
+                fetchzip {
+                    stripRoot = false;
+                    url = "https://community.altera.com/t5/s/jgyke29768/attachments/jgyke29768/knowledge-base/10423.10/7/quartus-24.3-0.35.zip";
+                    hash = "sha256-pgZ/njSpqMyG64lVQ0KDPyUzceWjgVMqwXrnMbzoQX8=";
+                }
+            }/quartus-24.3-0.35-linux.run"
+        ];
     };
     "25.1.0.129" = {
         inherit variant;
@@ -119,13 +123,15 @@ in
                 easicn5x = "sha256-96nn7qD0xGZlcxcCeP4uVCRcM7itqwbG+wL2ZioMu68=";
                 stratix10 = "sha256-IBX7ceTc6/oHcT/RFRVvBlvZEMB3nBt4X33rA+wKn/Q=";
             };
-        patcher = "${
-            fetchzip {
-                stripRoot = false;
-                url = "https://community.altera.com/t5/s/jgyke29768/attachments/jgyke29768/knowledge-base/10423.10/9/quartus-25.1-0.36.zip";
-                hash = "sha256-Hj+y6GPb/hbQsT7fwTz13ZhGdOtFSLB6Y4sMV04wQug=";
-            }
-        }/quartus-25.1-0.36-linux.run";
+        patches = [
+            "${
+                fetchzip {
+                    stripRoot = false;
+                    url = "https://community.altera.com/t5/s/jgyke29768/attachments/jgyke29768/knowledge-base/10423.10/9/quartus-25.1-0.36.zip";
+                    hash = "sha256-Hj+y6GPb/hbQsT7fwTz13ZhGdOtFSLB6Y4sMV04wQug=";
+                }
+            }/quartus-25.1-0.36-linux.run"
+        ];
     };
     "25.3.0.109" = {
         variant = "pro";
@@ -165,12 +171,14 @@ in
                 stratix10 = "sha256-+CaEa1L8xviW405hbOgb6vOAHYAtVPFqXQZJQcLnP1Q=";
             };
 
-        patcher = "${
-            fetchzip {
-                stripRoot = false;
-                url = "https://community.altera.com/t5/s/jgyke29768/attachments/jgyke29768/knowledge-base/10423.10/2/quartus-25.3-0.27.zip";
-                hash = "sha256-sydAtG+NLAQaTWR9pTitui74I7MjFKr5JQgbHrn0oVk=";
-            }
-        }/quartus-25.3-0.27-linux.run";
+        patches = [
+            "${
+                fetchzip {
+                    stripRoot = false;
+                    url = "https://community.altera.com/t5/s/jgyke29768/attachments/jgyke29768/knowledge-base/10423.10/2/quartus-25.3-0.27.zip";
+                    hash = "sha256-sydAtG+NLAQaTWR9pTitui74I7MjFKr5JQgbHrn0oVk=";
+                }
+            }/quartus-25.3-0.27-linux.run"
+        ];
     };
 }
