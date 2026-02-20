@@ -8,11 +8,11 @@ final: prev: rec {
     mkQuartus = final.callPackage ./quartus.nix;
 
     quartus-prime-pro = mkQuartus {
-        quartusSource = quartusSources.pro."25.3.0.109";
+        quartusSource = quartusSources.pro.latest;
     };
 
     quartus-prime-standard = mkQuartus {
-        quartusSource = quartusSources.standard."23.1std.1.993";
+        quartusSource = quartusSources.standard.latest;
     };
 
 }
