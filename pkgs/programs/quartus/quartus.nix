@@ -76,19 +76,13 @@ buildFHSEnv rec {
     # these libs are installed as 64 bit, plus as 32 bit when multiArch is true
     multiPkgs =
         pkgs:
-        with pkgs;
-        let
-            # This seems ugly - can we override `libpng = libpng12` for all `pkgs`?
-            freetype = pkgs.freetype.override { libpng = libpng12; };
-            fontconfig = pkgs.fontconfig.override { inherit freetype; };
-            libXft = pkgs.libxft.override { inherit freetype fontconfig; };
-        in
+        with (pkgs.extend (final: prev: { libpng = prev.libpng12; })); # needed for libxft, freetype, fontconfig
         [
             # questa requirements
             libxml2
             ncurses5
             unixODBC
-            libXft
+            libxft
             # common requirements
             freetype
             fontconfig
