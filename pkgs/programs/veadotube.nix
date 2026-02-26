@@ -7,25 +7,26 @@
     autoPatchelfHook,
     makeDesktopItem,
 
-    ffmpeg,
-    sdl3,
-    rnnoise,
-    rtmidi,
-    onnxruntime,
     bash,
+    ffmpeg,
     file,
-    icu,
     freetype,
     harfbuzz,
+    icu,
+    onnxruntime,
+    openssl,
+    rnnoise,
+    rtmidi,
+    sdl3,
     wineWowPackages,
 }:
 stdenv.mkDerivation (finalAttrs: rec {
     pname = "veadotube";
-    version = "0.5-20260116a";
+    version = "0.6-20260225a";
     src = requireFile {
         name = "veadotube-labs-veadotube-linux-x64.zip";
         url = "https://veado.tube/";
-        hash = "sha256-QKcx9ieXBx2RQUVo5QEAKVdBvB349eFh2ikYux8WYH4=";
+        hash = "sha256-9lm9GwMS8C3jYcXLZWs8atAx4GFV9Z2nyflRDiy00+8=";
     };
     sourceRoot = ".";
     system = "x86_64-linux";
@@ -34,13 +35,14 @@ stdenv.mkDerivation (finalAttrs: rec {
         unzip
     ];
     runtimeDependencies = [
-        onnxruntime
-        harfbuzz
         freetype
+        harfbuzz
         icu
-        sdl3
+        onnxruntime
+        openssl.out # libssl
         rnnoise
         rtmidi
+        sdl3
     ];
     buildInputs = runtimeDependencies ++ [
         bash
