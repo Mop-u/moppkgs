@@ -1,11 +1,23 @@
-final: prev: rec {
+final: prev:
+let
+    mkQuartus = final.callPackage ./quartus.nix;
+    mkQuartusPackages = builtins.mapAttrs (
+        n: v:
+        if builtins.isFunction v then
+            args: mkQuartus { quartusSource = v args; }
+        else
+            mkQuartus { quartusSource = v; }
+    );
     quartusSources = {
-        pro = final.callPackage ./sources/pro.nix { };
         lite = final.callPackage ./sources/lite.nix { };
         standard = final.callPackage ./sources/standard.nix { };
+        pro = final.callPackage ./sources/pro.nix { };
     };
+    quartusPackages = builtins.mapAttrs (n: v: mkQuartusPackages v) quartusSources;
+in
+rec {
 
-    mkQuartus = final.callPackage ./quartus.nix;
+    inherit mkQuartus quartusSources quartusPackages;
 
     quartus-prime-pro = mkQuartus {
         quartusSource = quartusSources.pro.latest;
