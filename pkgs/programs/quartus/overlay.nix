@@ -15,16 +15,8 @@ let
     };
     quartusPackages = builtins.mapAttrs (n: v: mkQuartusPackages v) quartusSources;
 in
-rec {
-
+{
     inherit mkQuartus quartusSources quartusPackages;
-
-    quartus-prime-pro = mkQuartus {
-        quartusSource = quartusSources.pro.latest;
-    };
-
-    quartus-prime-standard = mkQuartus {
-        quartusSource = quartusSources.standard.latest;
-    };
-
+    quartus-prime-pro = quartusPackages.pro.latest;
+    quartus-prime-standard = quartusPackages.standard.latest;
 }
