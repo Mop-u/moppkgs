@@ -18,7 +18,7 @@
     rnnoise,
     rtmidi,
     sdl3,
-    wineWowPackages,
+    wineWow64Packages,
 }:
 stdenv.mkDerivation (finalAttrs: rec {
     pname = "veadotube";
@@ -48,7 +48,7 @@ stdenv.mkDerivation (finalAttrs: rec {
         bash
         file
         ffmpeg
-        wineWowPackages.stable
+        wineWow64Packages.stable
     ];
     installPhase =
         let
