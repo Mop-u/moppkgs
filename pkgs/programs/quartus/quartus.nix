@@ -87,7 +87,7 @@ buildFHSEnv rec {
             # questa requirements
             libxml2
             ncurses5
-            unixODBC
+            unixodbc
             libXft
             # common requirements
             freetype
