@@ -6,7 +6,7 @@
     inputs@{ self, nixpkgs, ... }:
     let
       inherit (nixpkgs) lib;
-      forEachSystem = systems: f: builtins.foldl' (lib.recursiveUpdate) { } (builtins.map (f) systems);
+      forEachSystem = systems: f: builtins.foldl' (lib.recursiveUpdate) { } (map (f) systems);
     in
     (forEachSystem [ "x86_64-linux" ] (
       system:
@@ -18,6 +18,21 @@
       in
       {
         packages.${system} = self.overlays.default pkgs pkgs;
+        checks.${system} =
+          let
+            moppkgs = self.packages.${system};
+            inherit (moppkgs) quartusPackages;
+          in
+          {
+            inherit (moppkgs)
+              naturaldocs
+              ttf2psf
+              slang-server
+              ;
+            quartus-prime-lite = quartusPackages.lite.latest;
+            quartus-prime-standard = quartusPackages.standard.latest;
+            quartus-prime-pro = quartusPackages.pro.latest;
+          };
       }
     ))
     // {
