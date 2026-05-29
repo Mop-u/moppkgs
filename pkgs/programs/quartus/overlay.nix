@@ -1,4 +1,4 @@
-final: prev:
+final: _:
 let
     mkQuartus = final.callPackage ./quartus.nix;
     mkQuartusPackages = builtins.mapAttrs (
