@@ -4,23 +4,27 @@
     cmake,
     python3,
     mimalloc,
+    boost187,
+    tomlplusplus,
     catch2_3,
     cpptrace,
     fmt,
 }:
 stdenv.mkDerivation (finalAttrs: {
     pname = "slang-server";
-    version = "0.2.5";
+    version = "0.2.6";
     src = fetchgit {
         url = "https://github.com/hudson-trading/slang-server";
         rev = "v${finalAttrs.version}";
-        hash = "sha256-otXgWg7+icsE473i11tjtyNO96ff/tCGTE3+hDEvV28=";
+        hash = "sha256-rOffWraeUPa26A5dG74GhIAmnR6j4vR7NjqyfHeUjLI=";
         fetchSubmodules = true;
     };
     nativeBuildInputs = [
         cmake
         python3
         mimalloc
+        boost187
+        tomlplusplus
         catch2_3
         cpptrace
         fmt.dev
