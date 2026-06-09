@@ -1,168 +1,168 @@
 {
-    mkDerivation,
-    lib,
-    fetchurl,
-    unstick,
-    unzip,
-    quartusSource,
-    quartusOptions,
+  mkDerivation,
+  lib,
+  fetchurl,
+  unstick,
+  unzip,
+  quartusSource,
+  quartusOptions,
 }:
 
 let
-    inherit (quartusSource) version;
+  inherit (quartusSource) version;
 
-    installs = quartusOptions.installs or quartusSource.defaultInstalls;
-    devices = quartusOptions.devices or quartusSource.defaultDevices;
+  installs = quartusOptions.installs or quartusSource.defaultInstalls;
+  devices = quartusOptions.devices or quartusSource.defaultDevices;
 
-    allInstallers = lib.mapAttrsToList (n: v: n) quartusSource.installers;
-    allDevices = lib.mapAttrsToList (n: v: n) quartusSource.devices;
+  allInstallers = lib.mapAttrsToList (n: v: n) quartusSource.installers;
+  allDevices = lib.mapAttrsToList (n: v: n) quartusSource.devices;
 
-    installList = lib.unique ([ quartusSource.quartusInstaller ] ++ installs);
-    installPartList = lib.concatMap (
-        id: (lib.mapAttrsToList (n: v: n) (quartusSource.installerParts.${id} or { }))
-    ) installList;
+  installList = lib.unique ([ quartusSource.quartusInstaller ] ++ installs);
+  installPartList = lib.concatMap (
+    id: (lib.mapAttrsToList (n: v: n) (quartusSource.installerParts.${id} or { }))
+  ) installList;
 
-    # v21 and higher have Questa
-    hasQuesta = lib.any (id: id == "QuestaSetup") allInstallers;
-    withQuesta = lib.any (id: id == "QuestaSetup") installList;
+  # v21 and higher have Questa
+  hasQuesta = lib.any (id: id == "QuestaSetup") allInstallers;
+  withQuesta = lib.any (id: id == "QuestaSetup") installList;
 
-    # v20 and lower have ModelSim
-    hasModelSim = lib.any (id: id == "ModelSimSetup") allInstallers;
-    withModelSim = lib.any (id: id == "ModelSimSetup") installList;
+  # v20 and lower have ModelSim
+  hasModelSim = lib.any (id: id == "ModelSimSetup") allInstallers;
+  withModelSim = lib.any (id: id == "ModelSimSetup") installList;
 
-    selectedDevices = lib.intersectLists allDevices (lib.unique devices); # TODO: error if device not in list
-    unselectedDevices = lib.subtractLists allDevices selectedDevices;
+  selectedDevices = lib.intersectLists allDevices (lib.unique devices); # TODO: error if device not in list
+  unselectedDevices = lib.subtractLists allDevices selectedDevices;
 
-    installPartHashes = lib.mergeAttrsList (
-        map (id: quartusSource.installerParts.${id} or { }) allInstallers
-    );
+  installPartHashes = lib.mergeAttrsList (
+    map (id: quartusSource.installerParts.${id} or { }) allInstallers
+  );
 
-    componentTree = lib.mapAttrs (
-        n: v: (if (lib.isString v) then { ${n} = v; } else v)
-    ) quartusSource.devices;
+  componentTree = lib.mapAttrs (
+    n: v: (if (lib.isString v) then { ${n} = v; } else v)
+  ) quartusSource.devices;
 
-    download =
-        { name, hash }:
-        fetchurl {
-            inherit name hash;
-            url = "${quartusSource.baseUrl}/${name}";
-        };
+  download =
+    { name, hash }:
+    fetchurl {
+      inherit name hash;
+      url = "${quartusSource.baseUrl}/${name}";
+    };
 
-    installers = map (
-        id:
+  installers = map (
+    id:
+    download {
+      name = "${id}-${version}-linux.run";
+      hash = quartusSource.installers.${id};
+    }
+  ) installList;
+
+  components = lib.unique (
+    (map (
+      id:
+      download {
+        name = "${id}-${version}-linux.qdz";
+        hash = installPartHashes.${id};
+      }
+    ) installPartList)
+    ++ (lib.concatMap (
+      dev:
+      (map (
+        part:
         download {
-            name = "${id}-${version}-linux.run";
-            hash = quartusSource.installers.${id};
+          name = "${part}-${version}.qdz";
+          hash = componentTree.${dev}.${part};
         }
-    ) installList;
+      ) (lib.mapAttrsToList (n: v: n) componentTree.${dev}))
+    ) selectedDevices)
+  );
 
-    components = lib.unique (
-        (map (
-            id:
-            download {
-                name = "${id}-${version}-linux.qdz";
-                hash = installPartHashes.${id};
-            }
-        ) installPartList)
-        ++ (lib.concatMap (
-            dev:
-            (map (
-                part:
-                download {
-                    name = "${part}-${version}.qdz";
-                    hash = componentTree.${dev}.${part};
-                }
-            ) (lib.mapAttrsToList (n: v: n) componentTree.${dev}))
-        ) selectedDevices)
-    );
-
-    patches = quartusSource.patches or [ ];
+  patches = quartusSource.patches or [ ];
 
 in
 mkDerivation {
-    inherit version;
-    pname = "quartus-prime-${quartusSource.variant}-unwrapped";
+  inherit version;
+  pname = "quartus-prime-${quartusSource.variant}-unwrapped";
 
-    nativeBuildInputs = [
-        unstick
-        unzip
-    ];
+  nativeBuildInputs = [
+    unstick
+    unzip
+  ];
 
-    buildCommand =
-        let
+  buildCommand =
+    let
 
-            copyExecutable =
-                { path, name }:
-                ''
-                    # `$(cat $NIX_CC/nix-support/dynamic-linker) $src[0]` often segfaults, so cp + patchelf
-                    cp ${path} $TEMP/${name}
-                    chmod u+w,+x $TEMP/${name}
-                    patchelf --interpreter $(cat $NIX_CC/nix-support/dynamic-linker) $TEMP/${name}
-                '';
-            copyInstaller =
-                installer:
-                copyExecutable {
-                    path = installer;
-                    inherit (installer) name;
-                };
-            copyComponent = component: "cp ${component} $TEMP/${component.name}";
-            # leaves enabled: quartus, devinfo
-            disabledComponents = [
-                "quartus_help"
-                "quartus_update"
-            ]
-            ++ (if hasQuesta then ([ "questa_fe" ] ++ (lib.optional (!withQuesta) "questa_fse")) else [ ])
-            ++ (
-                if hasModelSim then ([ "modelsim_ae" ] ++ (lib.optional (!withModelSim) "modelsim_ase")) else [ ]
-            )
-            ++ unselectedDevices;
-
-            # https://community.altera.com/kb/knowledge-base/why-do-i-unexpectedly-observe-intermittent-ddm-errors/349714
-            applyPatch = patcher: ''
-                echo "setting up patcher..."
-                ${copyExecutable {
-                    path = patcher;
-                    name = builtins.baseNameOf patcher;
-                }}
-
-                echo "executing patcher..."
-                unstick $TEMP/${builtins.baseNameOf patcher} \
-                  --mode unattended --installdir $out --accept_eula 1 --patch_to quartus
-            '';
-        in
+      copyExecutable =
+        { path, name }:
         ''
-            echo "setting up installer..."
-            ${lib.concatMapStringsSep "\n" copyInstaller installers}
-            ${lib.concatMapStringsSep "\n" copyComponent components}
-
-            echo "executing installer..."
-            # "Could not load seccomp program: Invalid argument" might occur if unstick
-            # itself is compiled for x86_64 instead of the non-x86 host. In that case,
-            # override the input.
-            unstick $TEMP/${(builtins.head installers).name} \
-              --disable-components ${lib.concatStringsSep "," disabledComponents} \
-              --mode unattended --installdir $out --accept_eula 1
-
-            ${lib.concatMapStringsSep "\n" applyPatch patches}
-
-            # cat all the logs so we can see them in nix log
-            cat $out/logs/*
-
-            echo "cleaning up..."
-            rm -r $out/uninstall $out/logs
-
-            # replace /proc pentium check with a true statement. this allows usage under emulation.
-            ${lib.optionalString (quartusSource.variant != "pro") ''
-                substituteInPlace $out/quartus/adm/qenv.sh \
-                  --replace-fail 'grep sse /proc/cpuinfo > /dev/null 2>&1' ':'
-            ''}
+          # `$(cat $NIX_CC/nix-support/dynamic-linker) $src[0]` often segfaults, so cp + patchelf
+          cp ${path} $TEMP/${name}
+          chmod u+w,+x $TEMP/${name}
+          patchelf --interpreter $(cat $NIX_CC/nix-support/dynamic-linker) $TEMP/${name}
         '';
+      copyInstaller =
+        installer:
+        copyExecutable {
+          path = installer;
+          inherit (installer) name;
+        };
+      copyComponent = component: "cp ${component} $TEMP/${component.name}";
+      # leaves enabled: quartus, devinfo
+      disabledComponents = [
+        "quartus_help"
+        "quartus_update"
+      ]
+      ++ (if hasQuesta then ([ "questa_fe" ] ++ (lib.optional (!withQuesta) "questa_fse")) else [ ])
+      ++ (
+        if hasModelSim then ([ "modelsim_ae" ] ++ (lib.optional (!withModelSim) "modelsim_ase")) else [ ]
+      )
+      ++ unselectedDevices;
 
-    meta = {
-        homepage = "https://fpgasoftware.intel.com";
-        description = "FPGA design and simulation software";
-        sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
-        license = lib.licenses.unfree;
-        platforms = [ "x86_64-linux" ];
-    };
+      # https://community.altera.com/kb/knowledge-base/why-do-i-unexpectedly-observe-intermittent-ddm-errors/349714
+      applyPatch = patcher: ''
+        echo "setting up patcher..."
+        ${copyExecutable {
+          path = patcher;
+          name = builtins.baseNameOf patcher;
+        }}
+
+        echo "executing patcher..."
+        unstick $TEMP/${builtins.baseNameOf patcher} \
+          --mode unattended --installdir $out --accept_eula 1 --patch_to quartus
+      '';
+    in
+    ''
+      echo "setting up installer..."
+      ${lib.concatMapStringsSep "\n" copyInstaller installers}
+      ${lib.concatMapStringsSep "\n" copyComponent components}
+
+      echo "executing installer..."
+      # "Could not load seccomp program: Invalid argument" might occur if unstick
+      # itself is compiled for x86_64 instead of the non-x86 host. In that case,
+      # override the input.
+      unstick $TEMP/${(builtins.head installers).name} \
+        --disable-components ${lib.concatStringsSep "," disabledComponents} \
+        --mode unattended --installdir $out --accept_eula 1
+
+      ${lib.concatMapStringsSep "\n" applyPatch patches}
+
+      # cat all the logs so we can see them in nix log
+      cat $out/logs/*
+
+      echo "cleaning up..."
+      rm -r $out/uninstall $out/logs
+
+      # replace /proc pentium check with a true statement. this allows usage under emulation.
+      ${lib.optionalString (quartusSource.variant != "pro") ''
+        substituteInPlace $out/quartus/adm/qenv.sh \
+          --replace-fail 'grep sse /proc/cpuinfo > /dev/null 2>&1' ':'
+      ''}
+    '';
+
+  meta = {
+    homepage = "https://fpgasoftware.intel.com";
+    description = "FPGA design and simulation software";
+    sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
+    license = lib.licenses.unfree;
+    platforms = [ "x86_64-linux" ];
+  };
 }
