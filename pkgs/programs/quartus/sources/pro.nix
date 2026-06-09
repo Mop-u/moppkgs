@@ -4,11 +4,11 @@ let
 
     # https://community.altera.com/kb/knowledge-base/why-do-i-unexpectedly-observe-intermittent-ddm-errors/349714
     mkDDMErrorPatch =
-        version: hash:
+        subDir: version: hash:
         "${
             fetchzip {
                 stripRoot = false;
-                url = "https://community.altera.com/t5/s/jgyke29768/attachments/jgyke29768/knowledge-base/10423.10/6/quartus-${version}.zip";
+                url = "https://community.altera.com/t5/s/jgyke29768/attachments/jgyke29768/knowledge-base/10423.10/${toString subDir}/quartus-${version}.zip";
                 inherit hash;
             }
         }/quartus-${version}-linux.run";
@@ -25,7 +25,7 @@ let
                 QuestaSetup = "sha256-/9z7y5anAhycPb1xFSai75WUHLZJrwmCzvg70EpAWpI=";
             };
             installerParts.QuartusProSetup.QuartusProSetup-part2 = "sha256-slY1K8Vgbd6ntMOyPcrhlUgArgZY5qe15MwvdQsE3q0=";
-            patches = [ (mkDDMErrorPatch "23.4-0.70" "sha256-8BrqEybFRppiwNf/8zyQJ8y3Cmv8pjT+9/CA9YjzyeI=") ];
+            patches = [ (mkDDMErrorPatch 6 "23.4-0.70" "sha256-8BrqEybFRppiwNf/8zyQJ8y3Cmv8pjT+9/CA9YjzyeI=") ];
             devices = {
                 agilex7 = "sha256-3VP4amVgED/zZtEWFtsMuIV9ePpD0iOBw1J7CV+6nz8=";
                 arria10 = "sha256-rCy03lujkuJmvKlyolKTU8UCYsaDwLQS7HlmDYGJXsM=";
@@ -45,7 +45,7 @@ let
                 QuestaSetup = "sha256-M2nhS51GDcTvNg3dseeijNR+vc5BAIe11hRWB21MUuw=";
             };
             installerParts.QuartusProSetup.QuartusProSetup-part2 = "sha256-nSdX1ip96IphMZSASjnrjGNRBJu3/66za5FLo3Boaq8=";
-            patches = [ (mkDDMErrorPatch "24.3-0.35" "sha256-pgZ/njSpqMyG64lVQ0KDPyUzceWjgVMqwXrnMbzoQX8=") ];
+            patches = [ (mkDDMErrorPatch 7 "24.3-0.35" "sha256-pgZ/njSpqMyG64lVQ0KDPyUzceWjgVMqwXrnMbzoQX8=") ];
             devices =
                 let
                     agilex_common = "sha256-FHbme4d8kWG9KBSxNn+7R6vgTVvxVfA4GDGWG48ytsw=";
@@ -76,7 +76,7 @@ let
                 QuestaSetup = "sha256-jMsVHOjm/3gDaYeODVmxHw4Mvzd0vZIs9aXVyufgbq8=";
             };
             installerParts.QuartusProSetup.QuartusProSetup-part2 = "sha256-lAqZNFoqTUVkL+XeDVxWfWlJU2pL5NtsMPyI6rmZpUo=";
-            patches = [ (mkDDMErrorPatch "25.1-0.36" "sha256-Hj+y6GPb/hbQsT7fwTz13ZhGdOtFSLB6Y4sMV04wQug=") ];
+            patches = [ (mkDDMErrorPatch 9 "25.1-0.36" "sha256-Hj+y6GPb/hbQsT7fwTz13ZhGdOtFSLB6Y4sMV04wQug=") ];
             devices =
                 let
                     agilex_common = "sha256-Z9zDhZBoy5whLcCTPasu4HYQt0cZ+m5eI+RjrUhGZsw=";
@@ -111,7 +111,7 @@ let
                 QuestaSetup = "sha256-WCbN0l73nlH7CjzjQ2+B0q9KUJKcaiYYxhxQgjMLyeg=";
             };
             installerParts.QuartusProSetup.QuartusProSetup-part2 = "sha256-QqG/bieWb40bbb3bluAiGXZsVa7T/3ZYVjJRZCLS9LU=";
-            patches = [ (mkDDMErrorPatch "25.3-0.27" "sha256-sydAtG+NLAQaTWR9pTitui74I7MjFKr5JQgbHrn0oVk=") ];
+            patches = [ (mkDDMErrorPatch 2 "25.3-0.27" "sha256-sydAtG+NLAQaTWR9pTitui74I7MjFKr5JQgbHrn0oVk=") ];
             devices =
                 let
                     agilex_common = "sha256-n/Z3Vmbj+JltvhyzPiHFgGVfO/TaA6pHt8Z2yQu5opQ=";
