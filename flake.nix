@@ -25,9 +25,10 @@
           in
           {
             inherit (moppkgs)
+              edalize
               naturaldocs
-              ttf2psf
               slang-server
+              ttf2psf
               ;
             quartus-prime-lite = quartusPackages.lite.latest;
             quartus-prime-standard = quartusPackages.standard.latest;
