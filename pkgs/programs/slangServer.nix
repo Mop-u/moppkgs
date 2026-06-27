@@ -12,11 +12,11 @@
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "slang-server";
-  version = "0.2.6";
+  version = "0.2.7";
   src = fetchgit {
     url = "https://github.com/hudson-trading/slang-server";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-rOffWraeUPa26A5dG74GhIAmnR6j4vR7NjqyfHeUjLI=";
+    hash = "sha256-LHKfgs0YmrQMQ9cC8WAufqOUcatPYBudyX5tE8kWf3g=";
     fetchSubmodules = true;
   };
   nativeBuildInputs = [
