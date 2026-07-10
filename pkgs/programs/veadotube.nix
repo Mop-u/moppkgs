@@ -20,13 +20,13 @@
   sdl3,
   wineWow64Packages,
 }:
-stdenv.mkDerivation (finalAttrs: rec {
+stdenv.mkDerivation (finalAttrs: {
   pname = "veadotube";
-  version = "0.6-20260225a";
+  version = "0.6-20260710a";
   src = requireFile {
     name = "veadotube-labs-veadotube-linux-x64.zip";
     url = "https://veado.tube/";
-    hash = "sha256-9lm9GwMS8C3jYcXLZWs8atAx4GFV9Z2nyflRDiy00+8=";
+    hash = "sha256-vEYoz7uYDTuDaoHphdpJfAmMCeLMeEnQU4HdraymxRw=";
   };
   sourceRoot = ".";
   system = "x86_64-linux";
@@ -44,7 +44,7 @@ stdenv.mkDerivation (finalAttrs: rec {
     rtmidi
     sdl3
   ];
-  buildInputs = runtimeDependencies ++ [
+  buildInputs = finalAttrs.runtimeDependencies ++ [
     bash
     file
     ffmpeg
@@ -53,19 +53,19 @@ stdenv.mkDerivation (finalAttrs: rec {
   installPhase =
     let
       desktopItem = makeDesktopItem {
-        name = pname;
+        name = finalAttrs.pname;
         desktopName = "Veadotube";
         icon = fetchurl {
           url = "https://veado.tube/assets/brand/veadoicon.png";
           hash = "sha256-nyw+vuch9glw7WP5wIKVfU2Koz2DmWZdHSmQvbKqyvM=";
         };
-        exec = meta.mainProgram;
-        comment = meta.description;
+        exec = finalAttrs.meta.mainProgram;
+        comment = finalAttrs.meta.description;
       };
       replaceLibFile =
         oldName: new:
         let
-          old = "$out/share/${pname}/lib/${oldName}";
+          old = "$out/share/${finalAttrs.pname}/lib/${oldName}";
         in
         ''
           rm ${old}
@@ -73,12 +73,12 @@ stdenv.mkDerivation (finalAttrs: rec {
         '';
     in
     ''
-      mkdir -p $out/share/${pname}
-      cp -r ./* $out/share/${pname}/
-      chmod +x $out/share/${pname}/veadotube
+      mkdir -p $out/share/${finalAttrs.pname}
+      cp -r ./* $out/share/${finalAttrs.pname}/
+      chmod +x $out/share/${finalAttrs.pname}/veadotube
 
-      rm $out/share/${pname}/lib/libonnxruntime.so
-      rm $out/share/${pname}/lib/libonnxruntime_providers_shared.so
+      rm $out/share/${finalAttrs.pname}/lib/libonnxruntime.so
+      rm $out/share/${finalAttrs.pname}/lib/libonnxruntime_providers_shared.so
       ${replaceLibFile "ffmpeg" (lib.getExe ffmpeg)}
       ${replaceLibFile "sdl3.so" "${sdl3}/lib/libSDL3.so"}
       ${replaceLibFile "rnnoise.so" "${rnnoise}/lib/librnnoise.so"}
@@ -87,9 +87,9 @@ stdenv.mkDerivation (finalAttrs: rec {
       mkdir -p $out/bin
       cat > $out/bin/veadotube<< EOF
       #! ${lib.getExe bash}
-      export WINEPREFIX=\$HOME/.local/share/${pname}
+      export WINEPREFIX=\$HOME/.local/share/${finalAttrs.pname}
       export PATH=/run/wrappers/bin:${file}/bin:$PATH
-      exec $out/share/${pname}/veadotube \$@
+      exec $out/share/${finalAttrs.pname}/veadotube \$@
       EOF
       chmod +x $out/bin/veadotube
 
