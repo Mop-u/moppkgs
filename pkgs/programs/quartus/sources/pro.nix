@@ -1,4 +1,8 @@
-{ fetchzip, lib }:
+{
+  fetchzip,
+  writeText,
+  lib,
+}:
 let
   helpers = import ./helpers.nix;
 
@@ -8,7 +12,8 @@ let
     "${
       fetchzip {
         stripRoot = false;
-        url = "https://community.altera.com/t5/s/jgyke29768/attachments/jgyke29768/knowledge-base/10423.10/${toString subDir}/quartus-${version}.zip";
+        curlOpts = "-H @${writeText "headers.txt" "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0"}";
+        url = "https://community.altera.com/t5/s/jgyke29768/attachments/jgyke29768/knowledge-base/10423/${toString subDir}/quartus-${version}.zip";
         inherit hash;
       }
     }/quartus-${version}-linux.run";

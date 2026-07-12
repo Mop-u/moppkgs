@@ -20,7 +20,7 @@ let
     in
     applied // (elem final prev');
 
-  composeManyExtensions = builtins.foldl' (composeExtensions) (_: _: { });
+  composeManyExtensions = builtins.foldl' composeExtensions (_: _: { });
 
   default = composeManyExtensions (builtins.attrValues overlays);
 in
