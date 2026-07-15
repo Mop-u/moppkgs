@@ -1,0 +1,15 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 2fc0314..b797a28 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -83,6 +83,10 @@ if(SLANG_SERVER_MASTER_PROJECT AND NOT DEFINED CMAKE_DISABLE_FIND_PACKAGE_fmt)
+   set(CMAKE_DISABLE_FIND_PACKAGE_fmt TRUE)
+ endif()
+ 
++if(NOT CMAKE_DISABLE_FIND_PACKAGE_fmt)
++  find_package(fmt 12.2.0)
++endif()
++
+ if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+   # This ensures that *all* targets (including slang and reflect-cpp) use the
+   # default Apple C++ runtime, preventing dynamic link conflicts.
