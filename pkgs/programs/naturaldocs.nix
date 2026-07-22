@@ -1,43 +1,40 @@
 {
-  lib,
+  buildDotnetModule,
+  dotnetCorePackages,
+  fetchFromGitHub,
+  sqlite,
   stdenv,
-  fetchurl,
-  bash,
-  mono,
-  unzip,
 }:
 
-stdenv.mkDerivation rec {
+buildDotnetModule (finalAttrs: {
   pname = "naturaldocs";
-  version = "2.3.1";
-  dontConfigure = true;
+  version = "2.4-beta1";
 
-  src = fetchurl {
-    url = "https://naturaldocs.org/download/natural_docs/${version}/Natural_Docs_${version}.zip";
-    hash = "sha256-khROLesf8mBtKTQ8/qID6okFSa0vd8A98c6i2AFJcss=";
+  src = fetchFromGitHub {
+    name = "${finalAttrs.pname}-${finalAttrs.version}-source";
+    owner = "NaturalDocs";
+    repo = "NaturalDocs";
+    rev = "Version_2.4_Beta_1";
+    hash = "sha256-7KJeJCTfeCUeOWg9s3X/LoV0YDZz5g0Mg51KI47AHR0=";
   };
-
-  nativeBuildInputs = [ unzip ];
-
-  buildInputs = [
-    mono
-    bash
+  projectFile = "CLI/CLI.csproj";
+  dotnet-sdk = dotnetCorePackages.sdk_10_0;
+  dotnet-runtime = dotnetCorePackages.runtime_10_0;
+  runtimeDeps = [ sqlite ];
+  dotnetFlags = [
+    "-property:Platform=${
+      {
+        "aarch64-darwin" = "macOS_ARM64";
+        "aarch64-linux" = "Linux_ARM64";
+        "x86_64-darwin" = "macOS_x64";
+        "x86_64-linux" = "Linux_x64";
+      }
+      .${stdenv.hostPlatform.system}
+    }"
   ];
-
-  installPhase = ''
-    mkdir -p $out/NaturalDocs
-    cp -r ./* $out/NaturalDocs/
-    mkdir -p $out/bin
-    cat > $out/bin/NaturalDocs<< EOF
-    #! ${lib.getExe bash}
-    exec ${mono}/bin/mono $out/NaturalDocs/NaturalDocs.exe \$@
-    EOF
-    chmod +x $out/bin/NaturalDocs
-  '';
-
   meta = {
     homepage = "https://www.naturaldocs.org";
     description = "Natural Docs source code documentation system";
     mainProgram = "NaturalDocs";
   };
-}
+})
