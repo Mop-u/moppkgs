@@ -4,7 +4,7 @@
   rustPlatform,
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
-  pname = "leaf";
+  pname = "leaf-markdown";
   version = "1.26.2";
   src = fetchFromGitHub {
     owner = "RivoLink";
@@ -14,6 +14,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
   };
   cargoHash = "sha256-/IGQ0UTvQGU4KQKl5mocGeGEDx4AdMQQTv4B3bkpIJ0=";
   meta = {
+    mainProgram = "leaf";
     description = "Terminal Markdown previewer";
     homepage = "https://leaf.rivolink.mg";
     license = lib.licenses.mit;

@@ -1,7 +1,7 @@
 let
   overlays =
     (builtins.mapAttrs (name: value: (final: prev: { "${name}" = value final prev; })) {
-      leaf = final: _: final.callPackage ./pkgs/leaf.nix { };
+      leaf-markdown = final: _: final.callPackage ./pkgs/leaf.nix { };
       comic-code = final: _: final.callPackage ./pkgs/comic-code.nix { };
       edalize = final: _: final.callPackage ./pkgs/edalize.nix { };
       naturaldocs = final: _: final.callPackage ./pkgs/naturaldocs.nix { };
