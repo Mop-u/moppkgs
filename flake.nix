@@ -34,6 +34,7 @@
             {
               inherit (moppkgs)
                 edalize
+                leaf
                 naturaldocs
                 slang-server
                 ttf2psf
