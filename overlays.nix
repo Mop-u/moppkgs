@@ -1,15 +1,15 @@
 let
   overlays =
     (builtins.mapAttrs (name: value: (final: prev: { "${name}" = value final prev; })) {
-      comic-code = final: _: final.callPackage ./pkgs/fonts/comic-code.nix { };
-      edalize = final: _: final.callPackage ./pkgs/programs/edalize.nix { };
-      naturaldocs = final: _: final.callPackage ./pkgs/programs/naturaldocs.nix { };
-      slang-server = final: _: final.callPackage ./pkgs/programs/slangServer/slangServer.nix { };
-      ttf2psf = final: _: final.callPackage ./pkgs/programs/ttf2psf.nix { };
-      veadotube = final: _: final.callPackage ./pkgs/programs/veadotube.nix { };
+      comic-code = final: _: final.callPackage ./pkgs/comic-code.nix { };
+      edalize = final: _: final.callPackage ./pkgs/edalize.nix { };
+      naturaldocs = final: _: final.callPackage ./pkgs/naturaldocs.nix { };
+      slang-server = final: _: final.callPackage ./pkgs/slangServer/slangServer.nix { };
+      ttf2psf = final: _: final.callPackage ./pkgs/ttf2psf.nix { };
+      veadotube = final: _: final.callPackage ./pkgs/veadotube.nix { };
     })
     // {
-      quartus = import ./pkgs/programs/quartus/overlay.nix;
+      quartus = import ./pkgs/quartus/overlay.nix;
     };
 
   composeExtensions =

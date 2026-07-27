@@ -39,8 +39,8 @@
                 ttf2psf
                 ;
               quartus-prime-lite = quartusPackages.lite.latest;
-              quartus-prime-standard = quartusPackages.standard.latest;
               quartus-prime-pro = quartusPackages.pro.latest;
+              quartus-prime-standard = quartusPackages.standard.latest;
             };
         }
       )
