@@ -5,12 +5,12 @@
 }:
 buildGoModule (finalAttrs: {
   pname = "dnsfmt";
-  version = "0.8.0";
+  version = "0.0.14";
   src = fetchFromGitHub {
     owner = "miekg";
     repo = finalAttrs.pname;
     tag = "v${finalAttrs.version}";
-    hash = "sha256-9bAifsK6LO/ouV1ChyzhVmiN5MLQ18m9nViPD37QwGc=";
+    hash = "sha256-SkiIwY2tWHlqROStpwP1lm4+OEhc3NVo96xaRu7EWbU=";
   };
   vendorHash = "sha256-DWrHwr+hc9JEKBlUMuGJFKzSzJ57zzjsX+1P3XZk92I=";
   doCheck = false;
