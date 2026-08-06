@@ -33,6 +33,7 @@
             in
             {
               inherit (moppkgs)
+                dnsfmt
                 edalize
                 leaf-markdown
                 naturaldocs
