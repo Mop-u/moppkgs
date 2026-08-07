@@ -20,6 +20,7 @@ python3Packages.buildPythonPackage (finalAttrs: {
   build-system = [ python3Packages.setuptools ];
   meta = {
     description = "Downloads your Bandcamp purchases automatically";
+    mainProgram = finalAttrs.pname;
     homepage = "https://github.com/meeb/bandcampsync";
     license = lib.licenses.bsd3;
   };
