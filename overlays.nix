@@ -1,6 +1,7 @@
 let
   overlays =
     (builtins.mapAttrs (name: value: (final: prev: { "${name}" = value final prev; })) {
+      bandcampsync = final: _: final.callPackage ./pkgs/bandcampsync.nix { };
       comic-code = final: _: final.callPackage ./pkgs/comic-code.nix { };
       dnsfmt = final: _: final.callPackage ./pkgs/dnsfmt.nix { };
       edalize = final: _: final.callPackage ./pkgs/edalize.nix { };

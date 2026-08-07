@@ -33,6 +33,7 @@
             in
             {
               inherit (moppkgs)
+                bandcampsync
                 dnsfmt
                 edalize
                 leaf-markdown
